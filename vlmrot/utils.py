@@ -109,8 +109,8 @@ def parser_gen():
     parser.add_argument('--seed', type=int, default=0, help='Random Seed for HuggingFace and PyTorch')
 
     # calibration
-    parser.add_argument('--quant_vit', type=bool, default=True, help='Quant the vit encoder or not')
-    parser.add_argument('--scale_smooth', type=bool, default=True, help='Smoothquant-like scale smooth')
+    parser.add_argument('--quant_vit', action=argparse.BooleanOptionalAction, default=False, help='Quant the vit encoder or not')
+    parser.add_argument('--scale_smooth', action=argparse.BooleanOptionalAction, default=False, help='Smoothquant-like scale smooth')
     parser.add_argument('--smooth_min_free_gpu_gb', type=float, default=1.0,
                         help='Minimum free memory required on each smooth-scale model GPU before backward.')
     parser.add_argument('--smooth_gradient_checkpointing', action=argparse.BooleanOptionalAction, default=True,
@@ -436,6 +436,14 @@ def validate_args(args):
     Raises:
         ValueError: If any parameter value is not in the allowed choices
     """
+    if getattr(args, "flatquant", False):
+        from vlmrot.p4q_config import validate_p4q_args
+        validate_p4q_args(args)
+        invalid_datasets = [name for name in args.eval_dataset if name not in supported_eval_datasets]
+        if invalid_datasets:
+            raise ValueError(f"Unsupported eval_dataset: {invalid_datasets}")
+        return
+
     errors = []
     if getattr(args, "eval_generation_mode", "legacy") not in (
         "legacy",
