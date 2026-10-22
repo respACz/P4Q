@@ -1,0 +1,69 @@
+# LLaVA-NeXT-7B FlatQuant W4A4 calibration with P4Q-matched prompts.
+run_mode: model_distribute
+device_map: auto
+model: llava-hf/llava-v1.6-vicuna-7b-hf
+model_path: /home/disk/workspace/models/LLaVA-Next/llava-v1.6-vicuna-7b-hf #Replace with the model path in your project
+
+seed: 42
+
+
+flatquant: true
+flatquant_mode: train
+flatquant_prune_calibration: true
+save_flatquant_dir: cache/flatquant/
+epochs: 15
+cali_bsz: 1
+flat_lr: 0.005
+cali_trans: true
+add_diag: true
+lwc: true
+lac: true
+diag_init: sq_style
+diag_alpha: 0.3
+direct_inv: false
+separate_vtrans: false
+flatquant_fold_check_samples: 1
+flatquant_fold_check_tol: 0.001
+
+visual_prune: true
+visual_prune_strategy: p4q
+visual_prune_keep_ratio: 0.1111
+visual_prune_min_keep_tokens: 1
+visual_prune_p4q_beta: 0.5
+visual_prune_p4q_lambda: 0.6
+visual_prune_crisp_language: auto
+visual_prune_crisp_en_model: en_core_web_sm
+visual_prune_crisp_zh_model: zh_core_web_sm
+visual_prune_crisp_allow_heuristic_fallback: false
+visual_prune_recycle: false
+
+visual_prune_p4q_weight_bits: 4
+visual_prune_p4q_weight_groupsize: -1
+visual_prune_p4q_weight_asym: false
+visual_prune_p4q_weight_clip: true
+
+
+w_bits: 4
+a_bits: 4
+q_bits: 16
+k_bits: 16
+v_bits: 16
+w_groupsize: -1
+a_groupsize: -1
+a_clip_ratio: 0.9
+quant_method: rtn
+nsamples: 128
+cal_dataset: ScienceQA_Train
+# Replace these two paths with the local ScienceQA calibration data.
+question_file: /home/disk/workspace/QSVD/myllava/playground/data/eval/scienceqa/llava_train_QCM-LEA.json
+image_base: /home/disk/workspace/QSVD/myllava/playground/data/eval/scienceqa/images/train
+
+eval_dataset:
+  - MMMU_DEV_VAL
+  - VizWiz
+  - ScienceQA_TEST
+  - MME
+  - GQA_TestDev_Balanced
+  - MMBench_dev_cn
+  - POPE
+  - SEEDBench_IMG
