@@ -38,5 +38,6 @@ bash run.sh
 This project is based on the work of the following projects:
 
 - [FlatQuant](https://github.com/ruikangliu/FlatQuant)
+- [QSVD](https://github.com/SAI-Lab-NYU/QSVD/tree/main)
 
 We are grateful for the contributions provided by these projects.
